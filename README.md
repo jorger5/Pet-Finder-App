@@ -11,3 +11,4 @@ The registered users can:
 2. Look for pets in his / her area
 3. Create his / her own pet list.
 
+To start, run `npm start` in root folder and `npm run server` in backend folder
