@@ -43,7 +43,11 @@ const Login = (props) => {
       history.push(`/`);
     } catch (error) {
       setIsLoading(false);
-      Swal.fire("Login Error!", `${error}`, "error");
+      Swal.fire(
+        "Login Error!",
+        `There was an error loging you in, try again please!`,
+        "error"
+      );
       dispatch({ type: "ERROR_OWNER", payload: error });
     }
   };

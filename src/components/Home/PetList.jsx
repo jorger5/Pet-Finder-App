@@ -10,15 +10,20 @@ import ownerService from "../../services/owner.services";
 const PetList = () => {
   const [state, dispatch] = useContext(Context);
   const [allPets, setAllPets] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [ownerPets, setOwnerPets] = useState([]);
+  const [townPets, setTownPets] = useState();
   const location = useLocation();
 
   const renderContent = () => {
     switch (location.pathname) {
       case "/":
         return renderAllPets();
-      case "/my-town":
+      case "/campinas":
+      case "/saopaulo":
+      case "/rio":
+      case "/hortolandia":
+      case "/campos":
         return renderTownPets();
 
       case "/my-pets":
@@ -28,12 +33,13 @@ const PetList = () => {
         return renderAllPets();
     }
   };
-  const loggedOwner = (state.loggedOwner[0] && state.loggedOwner[0].user) || {};
+  let loggedOwner = (state.loggedOwner[0] && state.loggedOwner[0].user) || {};
 
   const getPets = useCallback(async () => {
     setIsLoading(true);
     try {
       let response = await petService.getAll();
+      let townPets;
 
       setAllPets(response.data);
 
@@ -47,7 +53,49 @@ const PetList = () => {
         let response = await ownerService.getOwnerPets(loggedOwner._id);
 
         setOwnerPets(response.data);
+      } else {
+        switch (location.pathname) {
+          case "/campinas":
+            townPets = response.data.filter((pet) => pet.city === "Campinas");
+            setTownPets(townPets);
+
+            dispatch({ type: "GET_TOWN_PETS", payload: townPets });
+            break;
+          case "/saopaulo":
+            townPets = response.data.filter((pet) => pet.city === "Sao Paulo");
+            setTownPets(townPets);
+
+            dispatch({ type: "GET_TOWN_PETS", payload: townPets });
+            break;
+          case "/hortolandia":
+            townPets = response.data.filter(
+              (pet) => pet.city === "Hortolandia"
+            );
+            setTownPets(townPets);
+
+            dispatch({ type: "GET_TOWN_PETS", payload: townPets });
+            break;
+          case "/campos":
+            townPets = response.data.filter(
+              (pet) => pet.city === "Campos do Jordao"
+            );
+            setTownPets(townPets);
+
+            dispatch({ type: "GET_TOWN_PETS", payload: townPets });
+            break;
+          case "/rio":
+            townPets = response.data.filter(
+              (pet) => pet.city === "Rio de Janeiro"
+            );
+            setTownPets(townPets);
+
+            dispatch({ type: "GET_TOWN_PETS", payload: townPets });
+            break;
+          default:
+            break;
+        }
       }
+
       setIsLoading(false);
     } catch (error) {
       dispatch({ type: "ERROR_OWNER", payload: error });
@@ -59,32 +107,45 @@ const PetList = () => {
   }, [getPets]);
 
   const renderTownPets = () => {
-    if (state.loggedOwner[0]) {
-      let pets = state.townPets;
+    let pets = townPets;
 
-      return pets.map((pet) => {
-        return <Pet key={pet.id} pet={pet} />;
-      });
-    } else {
-      return null;
-    }
+    return pets.map((pet) => {
+      return (
+        <Pet
+          key={pet.id}
+          pet={pet}
+          owner={loggedOwner}
+          loggedOwner={loggedOwner}
+        />
+      );
+    });
   };
 
   const renderAllPets = () => {
     let pets = state.pets;
 
     return pets.map((pet) => {
-      return <Pet key={pet.id} pet={pet} />;
+      return (
+        <Pet
+          key={pet.id}
+          pet={pet}
+          owner={loggedOwner}
+          loggedOwner={loggedOwner}
+        />
+      );
     });
   };
   const renderMyPets = () => {
-    let owner = null;
-    if (state.loggedOwner[0]) {
-      owner = state.loggedOwner[0];
-    }
     if (ownerPets) {
-      return ownerPets.map((pet) => {
-        return <Pet key={pet.id} pet={pet} owner={owner.user} />;
+      return ownerPets.pets.map((pet) => {
+        return (
+          <Pet
+            key={pet.id}
+            pet={pet}
+            owner={ownerPets.owner}
+            loggedOwner={loggedOwner}
+          />
+        );
       });
     } else {
       return null;
@@ -94,9 +155,17 @@ const PetList = () => {
   const renderTitle = () => {
     switch (location.pathname) {
       case "/":
-        return "There are all of our registered pets!";
-      case "/my-town":
-        return `These are our registered pets in ${loggedOwner.city}`;
+        return "These are all of our registered pets!";
+      case "/campinas":
+        return `These are our registered pets in Campinas`;
+      case "/saopaulo":
+        return `These are our registered pets in Sao Paulo`;
+      case "/rio":
+        return `These are our registered pets in Rio de Janeiro`;
+      case "/hortolandia":
+        return `These are our registered pets in Hortolandia`;
+      case "/campos":
+        return `These are our registered pets in Campos do Jordao`;
       case "/my-pets":
         return `These are the pets you've registered`;
       default:

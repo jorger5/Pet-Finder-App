@@ -20,6 +20,13 @@ const Reducer = (state, action) => {
         ...state,
         owners: state.owners.filter((owner) => owner._id !== action.payload),
       };
+    case "DELETE_PET_OF_OWNER":
+      return {
+        ...state,
+        owners: state.loggedOwner[0].user.pets.filter(
+          (pet) => pet._id === action.payload
+        ),
+      };
     case "ERROR_OWNER":
       return {
         ...state,

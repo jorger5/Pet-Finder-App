@@ -22,18 +22,28 @@ import Login from "./components/Owners/Login";
 function App() {
   let location = useLocation();
   let currentLoc = location.pathname;
-
   return (
     <Router>
       <Container fluid>
         <Row>
-          <Header />
+          <Header currentLoc={currentLoc} />
         </Row>
 
         <Row className="content_row">
           <Col>
             <Switch>
-              <Route exact path={["/", "/my-town", "/my-pets"]}>
+              <Route
+                exact
+                path={[
+                  "/",
+                  "/campinas",
+                  "/saopaulo",
+                  "/rio",
+                  "/campos",
+                  "/hortolandia",
+                  "/my-pets",
+                ]}
+              >
                 <PetList path={currentLoc} />
               </Route>
               <Route path="/create-pet">

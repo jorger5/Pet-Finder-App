@@ -58,7 +58,6 @@ const ownerService = {
   update: async (data, id) => {
     try {
       let response = API.put(OWNER_ENDPOINT.OWNER_DATA + id, data);
-      console.log(response);
       return response.data;
     } catch (error) {
       return error;

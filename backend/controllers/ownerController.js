@@ -36,9 +36,18 @@ exports.getOwner = async (req, res, next) => {
 exports.getOwnerPet = async (req, res, next) => {
   try {
     const owner = await Owner.findById(req.params.id);
+    let body = {
+      pets: owner.pets,
+      owner: {
+        name: owner.name,
+        email: owner.email,
+        address: owner.address,
+        city: owner.city,
+      },
+    };
     return res.status(200).json({
       success: true,
-      data: owner.pets,
+      data: body,
     });
   } catch (error) {
     return res.status(404).json({

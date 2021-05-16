@@ -28,7 +28,14 @@ const RegisterPet = () => {
         pets: updatePets,
       };
       await ownerService.update(updatePetOwner, state.loggedOwner[0].user._id);
-      body.owner = state.loggedOwner;
+      let owner = state.loggedOwner[0].user;
+      let bodyOwner = {
+        email: owner.email,
+        name: owner.name,
+        address: owner.address,
+        city: owner.city,
+      };
+      body.owner = bodyOwner;
 
       setSubmitting(false);
 
